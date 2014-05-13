@@ -1,6 +1,6 @@
 # neuraltuningdemo
 
-Clojure code for demoing very basic neural tuning in the context multi-sensory fusion.
+Clojure code for demoing very basic neural tuning in the context of multi-sensory fusion.
 
 ## Usage
 
