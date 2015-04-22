@@ -5,7 +5,6 @@
 
 (defvar my-packages '(better-defaults
 		      clojure-mode
-		      clojure-test-mode
 		      cider))
 (dolist (p my-packages)
   (when (not (package-installed-p p))
