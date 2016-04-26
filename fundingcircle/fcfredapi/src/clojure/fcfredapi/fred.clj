@@ -10,6 +10,8 @@
 
 (def series-ids ["GDPC1" "UMCSENT" "UNRATE"])
 
+(def save-revision-history? true)
+
 (def apikey-file-path "resources/fredapikey.key")
 
 (def obs-url "https://api.stlouisfed.org/fred/series/observations")
@@ -62,21 +64,36 @@
       (errorf "FRED data for series-id %s exceeds max-chunk-size!" series-id)
       data)))
 
+(defn- save-series-revision
+  [series-id recs]
+  (try
+    (let [resp (sql/insert! :obs_revisions recs)
+          n-recs (count recs)
+          n-resp (count resp)]
+      (when-not (= n-recs n-resp)
+        (errorf "Saved only %d out of %d records for obs revisions, series '%s'" n-resp n-recs series-id)))
+    (catch Exception e
+      (error (.getMessage e)))))
+
 (defn retrieve-and-save-series
   [series-id]
   (try
     (when-let [dat (get-series series-id)]
       (when-let [obs (not-empty (:observations dat))]
         (let [recs (->> obs
-                        (map #(cset/rename-keys % dat->table-key-map))
                         (map #(assoc % :series series-id))
-                        (map #(update-in % [:value] fix-value-str)))
-              resp (sql/insert! :observations recs)
-              n-recs (count recs)
-              n-resp (count resp)]
-          (if (= n-recs n-resp)
-            n-recs
-            (errorf "Saved only %d out of %d records for series '%s'" n-resp n-recs series-id)))))
+                        (map #(update-in % [:value] fix-value-str)))]
+          (when save-revision-history?
+            (save-series-revision series-id (map #(cset/rename-keys % dat->table-key-map) recs)))
+          ;; If you wanted to run this regularly to update the values, say daily, you'd need to change
+          ;; the following to handle inserting OR updating. In mysql this is typically done with
+          ;; INSERT ... ON DUPLICATE ...
+          (let [resp (sql/insert! :observations (map #(dissoc % :realtime_start :realtime_end) recs))
+                n-recs (count recs)
+                n-resp (count resp)]
+            (if (= n-recs n-resp)
+              n-recs
+              (errorf "Saved only %d out of %d records for series '%s'" n-resp n-recs series-id))))))
     (catch Exception e
       (error (str "(" series-id ") " (.getMessage e))))))
   
