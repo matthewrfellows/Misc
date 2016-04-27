@@ -34,13 +34,13 @@ The following assumes you already have Leiningen and Java installed.
 
    cd into the "fcfredapi" directory
    
-   To run in the REPL:
-      type `lein repl`
+   To run in the REPL -- 
+      type `lein repl`; 
       at the REPL prompt, type `(fred/retrieve-all-series)`
 
    Or, to run from the command line, first make an uberjar, `lein uberjar`, cd into "target/uberjar" and then:
 
-    `java -jar fcfredapi-0.1.0-standalone.jar fred`
+    java -jar fcfredapi-0.1.0-standalone.jar fred
 
 ## Other
 
