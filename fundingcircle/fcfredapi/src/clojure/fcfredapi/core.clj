@@ -1,7 +1,11 @@
 (ns fcfredapi.core
+  (:require [fcfredapi.fred :as fred])
   (:gen-class))
+;; ----------------------------------
 
 (defn -main
-  "I don't do a whole lot ... yet."
+  "Run me only once."
   [& args]
-  (println "Hello, World!"))
+  (when-let [a (first args)]
+    (when (= a "fred")
+      (fred/retrieve-all-series))))

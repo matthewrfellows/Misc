@@ -1,3 +1,10 @@
+
+# Create Database
+
+CREATE DATABASE `fcfreddata`;
+
+# Create Tables
+
 CREATE TABLE `fcfreddata`.`obs_revisions` (
 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 `series` VARCHAR(50) NOT NULL,
@@ -21,3 +28,4 @@ KEY `series` (`series`),
 KEY `date` (`date`),
 UNIQUE KEY `series_date` (`series`,`date`)
 ) ENGINE=InnoDB;
+

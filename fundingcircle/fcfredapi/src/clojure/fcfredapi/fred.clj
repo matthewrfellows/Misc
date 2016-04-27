@@ -64,6 +64,9 @@
       (errorf "FRED data for series-id %s exceeds max-chunk-size!" series-id)
       data)))
 
+;; It might be useful to keep the revisions for different "realtime" dates. I made a separate table for this, called
+;; "obs_revisions". The following code saves the full data there. This can be switched off by setting the Var, above, called
+;; save-revision-history? to false.
 (defn- save-series-revision
   [series-id recs]
   (try
@@ -75,6 +78,8 @@
     (catch Exception e
       (error (.getMessage e)))))
 
+;; Get data for a series, and save to the "observations" table (after stripping out "realtime_start" and "realtime_end").
+;; Optionally, also save the full data to the "obs_revisions" table.
 (defn retrieve-and-save-series
   [series-id]
   (try

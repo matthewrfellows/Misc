@@ -13,7 +13,7 @@
       k
       (throw (Exception. "Unable to determine sql password")))))
 
-(def sql-db
+(def sql-db ; Change this as appropriate
   {:classname "com.mysql.jdbc.Driver"
    :subprotocol "mysql"
    :subname "//localhost:3306/fcfreddata"
