@@ -48,16 +48,16 @@
       (errorf "status %s for request to '%s', with offset %d" (str status) url (:offset params 0)))))
 
 (defn- get-series-chunk-json
-  [series-id offset & {chunk-size :chunk-size}]
+  [series-id offset & {chunk-size :chunk-size params :params}]
   {:pre [(string? series-id) (integer? offset) (not (neg? offset))]}
   (let [chunk-size (or chunk-size max-chunk-size)
-        params {:series_id series-id :offset offset :limit chunk-size :file_type "json"}]
+        params (merge (or params {}) {:series_id series-id :offset offset :limit chunk-size :file_type "json"})]
     (when-let [resp (not-empty (api-get obs-url params))]
       (json/decode resp true))))
 
-(defn- get-series
-  [series-id]
-  (when-let [data (get-series-chunk-json series-id 0 :chunk-size max-chunk-size)]
+(defn get-series
+  [series-id & {params :params}]
+  (when-let [data (get-series-chunk-json series-id 0 :params params :chunk-size max-chunk-size)]
     (if (> (:count data) max-chunk-size)
       ;; currently it looks like there will never be more than 100k records for the series we want. But, just in case,
       ;; log that it happened so we can change the code to accomodate.

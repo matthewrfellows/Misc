@@ -9,8 +9,10 @@
                 ;; [org.postgresql/postgresql "9.4.1208.jre7"] ; POSTGRES, example.
                  [clj-http "2.1.0"]
                  [cheshire "5.6.1"]
+                 [simple-time "0.2.0"]
                  [com.taoensso/timbre "4.3.1"]]
   :main ^:skip-aot fcfredapi.core
   :source-paths ["src/clojure"]
   :target-path "target/%s"
+  :plugins [[lein-gorilla "0.3.6"]]
   :profiles {:uberjar {:aot :all}})
